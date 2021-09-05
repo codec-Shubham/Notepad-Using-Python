@@ -1,0 +1,99 @@
+# Notepad Project
+from tkinter import *
+import tkinter.messagebox as tmsg
+from tkinter.filedialog import askopenfilename,asksaveasfilename
+import os
+# Craeting Root
+root = Tk()
+root.geometry("600x500")
+root.title("Untitled-Notepad")
+root.wm_iconbitmap("1.ico")
+
+# Defining functions
+def newfile():
+    global file
+    root.title("Untitled-Notepad")
+    TextArea.delete(1.0,END)
+
+def openfile():
+    global  file
+    file = askopenfilename(defaultextension=".txt",filetypes=[("All Files","*.*"),("Text Documents","*.txt")])
+    if  file == "":
+        file=None
+    else:
+        root.title(os.path.basename(file)+"-Notepad")
+        TextArea.delete(1.0,END)
+        f = open(file,"r")
+        TextArea.insert(1.0,f.read())
+        f.close()
+
+def savefile():
+    global file
+    if file == None:
+        file = asksaveasfilename(initialfile="Untitled.txt", defaultextension=".txt",
+                             filetypes=[("All Files", "*.*"), ("Text Document", "*.txt")])
+        if file == " ":
+            file = None
+        else:
+            f = open(file,"w")
+            f.write(TextArea.get(1.0, END))
+            f.close()
+            root.title(os.path.basename(file)+"-Notepad")
+            print("File Saved")
+
+    else:
+        f = open(file,"w")
+        f.write(TextArea.get(1.0, END))
+        f.close()
+
+def exit():
+    quit()
+
+def cut():
+    TextArea.event_generate("<<Cut>>")
+
+def copy():
+    TextArea.event_generate("<<Copy>>")
+def paste():
+    TextArea.event_generate("<<Paste>>")
+def about():
+    tmsg.showinfo("Notepad","Developed By Shubham Kumar(Senior Developer At Microsoft) {California}")
+
+
+# Scroll Bar Setting
+scroll = Scrollbar(root)
+scroll.pack(side=RIGHT,fill=Y)
+
+# creating text Area
+TextArea = Text(root,font="lucida 15",yscrollcommand = scroll.set)
+TextArea.pack(expand=True,fill=BOTH)
+file = None
+scroll.config(command=TextArea.yview)
+
+# Creating Menus
+Mainmenu  = Menu(root)
+menubar = Menu(Mainmenu,tearoff=0,)
+menubar.add_command(label="New",command=newfile)
+menubar.add_command(label="Open",command=openfile)
+menubar.add_separator()
+menubar.add_command(label="Save",command=savefile)
+menubar.add_separator()
+menubar.add_command(label="Exit",command=exit)
+Mainmenu.add_cascade(label="File",menu=menubar)
+
+editmenu = Menu(Mainmenu,tearoff=0)
+editmenu.add_command(label="cut",command=cut)
+editmenu.add_command(label="Copy",command=copy)
+editmenu.add_command(label="Paste",command=paste)
+Mainmenu.add_cascade(label="Edit",menu=editmenu)
+
+helpmenu = Menu(Mainmenu,tearoff=0)
+helpmenu.add_command(label="About",command=about)
+Mainmenu.add_cascade(label="About",menu=helpmenu)
+
+
+root.config(menu=Mainmenu)
+
+root.mainloop()
+
+
