@@ -3,7 +3,7 @@ from tkinter import *
 import tkinter.messagebox as tmsg
 from tkinter.filedialog import askopenfilename,asksaveasfilename
 import os
-# Craeting Root
+# Creating Root
 root = Tk()
 root.geometry("600x500")
 root.title("Untitled-Notepad")
